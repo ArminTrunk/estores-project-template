@@ -9,11 +9,28 @@ Welche Bausteine pro Projekt gelten, steuert das **Profil** (`/project-type`).
 
 ---
 
+## 0. Schnellstart (zum Merken)
+
+```
+Use this template (GitHub)  →  Repo holen  →  ./scripts/init-project.sh "Name"
+→  npm i -D lefthook && npx lefthook install  →  claude  →  /project-type  →  /stack-selection  →  /plan
+```
+
+**Repo holen — zwei Wege, gleiches Ergebnis:**
+- **Terminal:** `git clone https://github.com/ArminTrunk/<dein-repo>.git` und dann `cd <dein-repo>`
+- **Cursor (per Maus):** `Cmd+Shift+P` → `Git: Clone` → Repo-URL einfügen → Zielordner wählen → „Open".
+  Danach in Cursor das Terminal öffnen (*Terminal → New Terminal*) und ab `init-project.sh` weitermachen.
+
+> `/`-Befehle (z. B. `/project-type`) immer **in Claude** (nach `claude`), nicht im normalen Terminal.
+
+---
+
 ## 1. Reihenfolge — so startest du ein neues Projekt (genau diese Schritte)
 
 | # | Schritt | Befehl | Ergebnis |
 |---|---------|--------|----------|
-| 1 | Repo aus Template erzeugen | GitHub „Use this template" → klonen | Eigenes Projekt-Repo |
+| 1 | Repo aus Template erzeugen | GitHub „Use this template" → „Create a new repository" | Eigenes Projekt-Repo |
+| 1b | Repo auf den Rechner holen | Terminal `git clone …` **oder** Cursor `Cmd+Shift+P` → `Git: Clone` | Projekt lokal offen |
 | 2 | **Projekt initialisieren** | `./scripts/init-project.sh "Projektname"` | README→Projekt-README, Template-Meta entfernt, `context/` + `.env.local` angelegt |
 | 3 | Git-Hooks aktivieren | `npm i -D lefthook && npx lefthook install` | Secrets-/Lint-/Commit-Hooks lokal |
 | 4 | Claude Code öffnen + Ordner vertrauen | `claude` | Auto-Prompt installiert estores-Marketplace + `estores-core` (Fallback: `.claude/PLUGINS.md`) |
