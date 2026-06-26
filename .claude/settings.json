@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "extraKnownMarketplaces": {
+    "estores": {
+      "source": { "source": "github", "repo": "ArminTrunk/estores-marketplace" }
+    }
+  },
+  "enabledPlugins": {
+    "estores-core@estores": true
+  }
+}

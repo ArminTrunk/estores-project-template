@@ -1,0 +1,68 @@
+# Claude Code — persönliche Dateien (nie committen)
+CLAUDE.local.md
+context/
+.claude/settings.local.json
+
+# MCP Server — enthält Tokens
+.mcp.json
+
+# Environment / Secrets
+.env
+.env.local
+.env.staging
+.env.production
+!.env.example
+
+# Logs
+logs/
+*.log
+
+# Dependencies
+node_modules/
+vendor/
+__pycache__/
+.venv/
+*.pyc
+
+# Build outputs
+dist/
+build/
+.next/
+.nuxt/
+out/
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+
+# Temporäre Dateien
+*.tmp
+*.bak
+repomix-output.txt
+
+# Framework-/Tool-Caches
+.astro/
+.turbo/
+.vercel/
+.svelte-kit/
+.cache/
+
+# Supabase lokal
+supabase/.branches/
+supabase/.temp/
+
+# Quality-Tooling
+.lighthouseci/
+pa11y-report*/
+
+# lokale Overrides
+*.local

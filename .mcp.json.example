@@ -1,0 +1,25 @@
+{
+  "_hinweis": "Kopiere zu .mcp.json (gitignored) und trage echte Tokens via Env ein. Nur benötigte Server behalten.",
+  "mcpServers": {
+    "supabase": {
+      "command": "npx",
+      "args": ["-y", "@supabase/mcp-server-supabase@latest"],
+      "env": { "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}" }
+    },
+    "storyblok": {
+      "type": "http",
+      "url": "https://mcp.labs.storyblok.com",
+      "_hinweis": "EU-Region für DSGVO"
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": { "GITHUB_TOKEN": "${GITHUB_TOKEN}" }
+    },
+    "dataforseo": {
+      "command": "npx",
+      "args": ["-y", "dataforseo-mcp-server"],
+      "env": { "DATAFORSEO_LOGIN": "${DATAFORSEO_LOGIN}", "DATAFORSEO_PASSWORD": "${DATAFORSEO_PASSWORD}" }
+    }
+  }
+}

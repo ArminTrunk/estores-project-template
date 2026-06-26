@@ -1,0 +1,14 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "_hinweis": "An Stack anpassen. Findet ungenutzte Dateien, Exports und Dependencies.",
+  "entry": [
+    "src/main.{js,ts,tsx}",
+    "src/index.{js,ts,tsx}",
+    "src/pages/**/*.{astro,ts,tsx}",
+    "app/**/*.{ts,tsx}",
+    "src/app/**/*.{ts,tsx}"
+  ],
+  "project": ["src/**/*.{js,ts,tsx,astro}", "app/**/*.{ts,tsx}"],
+  "ignoreDependencies": ["lefthook", "@lhci/cli", "pa11y-ci"],
+  "ignore": ["**/*.test.*", "tests/**"]
+}

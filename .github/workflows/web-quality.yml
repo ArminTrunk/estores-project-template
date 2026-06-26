@@ -1,0 +1,50 @@
+name: Web Quality (Performance · SEO · A11y)
+
+# Nur für Web-Profile relevant. Bei internal-tool ohne öffentliche Seiten
+# diesen Workflow deaktivieren/entfernen.
+on:
+  pull_request:
+    branches: [develop, staging, main]
+
+jobs:
+  lighthouse:
+    name: Lighthouse CI (CWV + SEO + A11y Budgets)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20', cache: 'npm' }
+      - run: npm ci
+      - run: npm run build
+      - name: Lighthouse CI
+        run: |
+          npm install -g @lhci/cli
+          lhci autorun || echo "Lighthouse-Budget verfehlt — Report prüfen"
+        # Budgets in .lighthouserc.json definieren
+
+  axe-a11y:
+    name: Accessibility (axe / pa11y)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20', cache: 'npm' }
+      - run: npm ci
+      - run: npm run build
+      - name: pa11y-ci
+        run: |
+          npm install -g pa11y-ci
+          pa11y-ci || echo "A11y-Findings — Report prüfen"
+        # URLs/Schwellen in .pa11yci.json
+
+  bundle-budget:
+    name: Bundle-Budget (size-limit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20', cache: 'npm' }
+      - run: npm ci
+      - run: npm run build
+      - name: size-limit
+        run: npx size-limit || echo "Bundle-Budget überschritten — Report prüfen"

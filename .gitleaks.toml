@@ -1,0 +1,18 @@
+# gitleaks-Konfiguration. Nutzt die Standard-Regeln + Projekt-Anpassungen.
+title = "EStores gitleaks config"
+[extend]
+useDefault = true   # alle eingebauten Secret-Regeln aktiv
+
+[allowlist]
+description = "Erlaubte Pfade/Platzhalter (keine echten Secrets)"
+paths = [
+  '''\.env\.example$''',
+  '''\.mcp\.json\.example$''',
+  '''(^|/)docs/''',
+]
+# Platzhalter-Werte, die KEINE echten Secrets sind
+regexes = [
+  '''(?i)\$\{[A-Z_]+\}''',          # ${ENV_VAR}
+  '''(?i)(your|dein|example|placeholder|xxx)[-_]?(key|token|secret)''',
+  '''sk-xxx''',
+]

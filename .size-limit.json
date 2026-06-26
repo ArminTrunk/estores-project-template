@@ -1,0 +1,15 @@
+[
+  {
+    "_hinweis": "Pfade an Build-Output anpassen (dist/.next). Budgets klein halten = guter LCP/INP.",
+    "name": "JS gesamt (initial)",
+    "path": ["dist/**/*.js", ".next/static/**/*.js"],
+    "limit": "180 kB",
+    "gzip": true
+  },
+  {
+    "name": "CSS gesamt",
+    "path": ["dist/**/*.css", ".next/static/**/*.css"],
+    "limit": "60 kB",
+    "gzip": true
+  }
+]
