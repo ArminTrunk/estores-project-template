@@ -23,7 +23,7 @@ jobs:
       node: ${{ steps.check.outputs.node }}
       sizelimit: ${{ steps.check.outputs.sizelimit }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - id: check
         run: |
           echo "node=$([ -f package.json ] && echo yes || echo no)" >> "$GITHUB_OUTPUT"
@@ -35,7 +35,7 @@ jobs:
     needs: detect
     if: needs.detect.outputs.node == 'yes'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with: { node-version: '22', cache: 'npm' }
       - run: npm ci
@@ -52,7 +52,7 @@ jobs:
     needs: detect
     if: needs.detect.outputs.node == 'yes'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with: { node-version: '22', cache: 'npm' }
       - run: npm ci
@@ -70,7 +70,7 @@ jobs:
     needs: detect
     if: needs.detect.outputs.node == 'yes' && needs.detect.outputs.sizelimit == 'yes'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with: { node-version: '22', cache: 'npm' }
       - run: npm ci
