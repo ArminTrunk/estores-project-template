@@ -12,7 +12,7 @@ jobs:
     name: Secret Scan (gitleaks)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0   # gitleaks braucht die Historie
       # Nutzt automatisch die .gitleaks.toml im Repo — dieselbe Config wie lefthook lokal.
@@ -24,7 +24,7 @@ jobs:
     name: Dependency Audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: npm audit
         run: |
           if [ -f package.json ]; then
@@ -42,7 +42,7 @@ jobs:
       security-events: write
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       # CodeQL schlägt fehl, wenn es keinen Code der Zielsprache gibt —
       # daher erst prüfen, ob JS/TS-Quellcode existiert (Stack initialisiert):
       - id: check
