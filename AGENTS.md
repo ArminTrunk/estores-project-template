@@ -1,33 +1,47 @@
 # AGENTS.md — [Projektname]
 
-## Für KI-Agenten die auf diesem Repo arbeiten
+> **Einzige Quelle** für Verhaltensregeln aller KI-Agenten (Claude Code, Cursor, …).
+> CLAUDE.md importiert diese Datei — Regeln NUR hier pflegen, nie doppelt.
 
-### Pflicht vor jeder Aktion
-1. CLAUDE.md lesen
+## Pflicht vor jeder Aktion
+1. CLAUDE.md lesen (Projekt-Profil, Stack, Befehle)
 2. docs/ARCHITECTURE.md lesen
 3. context/current-priorities.md lesen
-4. decisions/log.md auf relevante Entscheidungen prüfen
-5. CLAUDE.md → Projekt-Profil + docs/COMPLIANCE.md beachten (Pflicht-Skills je Profil)
+4. docs/BACKLOG.md prüfen (offene Tasks + Abhängigkeiten)
+5. decisions/log.md auf relevante Entscheidungen prüfen
+6. docs/COMPLIANCE.md beachten (Pflicht-Skills je Profil)
 
-### Was du NICHT tun darfst
+## Was du NICHT tun darfst
+> Diese Regeln werden zusätzlich technisch erzwungen (Plugin-Hooks,
+> `.claude/settings.json` → permissions.deny, lefthook, CI).
+
 - Direkt auf `main` oder `staging` pushen
 - Datenbankmigrationen ohne explizite Bestätigung ausführen
-- .env Dateien erstellen oder modifizieren
+- `.env`-Dateien lesen, erstellen oder modifizieren (Ausnahme: `.env.example`)
 - Dependencies hinzufügen oder entfernen ohne Bestätigung
-- Production-Deploys triggern
-- Personendaten (PII) in Logs/Errors/URLs/Analytics schreiben
-- Tracking vor Einwilligung laden
+- Production-Deploys triggern (nur via `/release`)
+- `console.log` / `dd()` / `print()` in Production-Code committen
+- Personendaten (PII) in Logs, Error-Messages, URLs oder Analytics-Events schreiben
+- Tracking/Drittanbieter-Scripts vor Einwilligung laden
+- UI bauen, die nur per Maus bedienbar ist (Tastatur + Semantik Pflicht bei Web-Profilen)
+- Code schreiben ohne vorher den Plan erklärt zu haben
 
-### Branching
-Alle Änderungen auf Feature-Branch: `feature/[beschreibung]`
+## Backlog
+- Einzige Task-Quelle: `docs/BACKLOG.md` (committed, Format siehe Dateikopf)
+- Vor neuen Features: dort auf Abhängigkeiten prüfen; nach Abschluss Status aktualisieren
 
-### Commit-Format
+## Branching
+- `main` → Production (protected) · `staging` → Staging · `develop` → Entwicklung
+- Alle Änderungen auf Feature-Branch: `feature/[ticket-id]-[name]`
+- Hotfixes: `hotfix/[ticket-id]-[name]`
+
+## Commit-Format
 `type(scope): beschreibung` — Conventional Commits
+Typen: feat / fix / docs / style / refactor / perf / test / build / ci / chore
 
-Typen: feat / fix / docs / style / refactor / test / chore
-
-### Kommunikation
-- Immer auf Deutsch antworten
+## Kommunikation
+- Immer auf Deutsch antworten (Code-Kommentare auf Englisch)
 - Vor größeren Änderungen: Plan erklären und Bestätigung abwarten
-- Technische Begriffe immer kurz erklären
-- Am Ende jeder Session: kurze Zusammenfassung
+- Technische Begriffe immer kurz erklären (Nutzer ist Nicht-Entwickler)
+- Bei Unklarheiten: fragen statt raten
+- Am Ende jeder Session: kurze Zusammenfassung (gemacht / offen / nächster Schritt)

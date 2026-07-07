@@ -55,6 +55,7 @@ entscheidet, welche Skills und Checks überhaupt gelten.
 
 | Command | Was | Wann |
 |---------|-----|------|
+| `/hilfe` | Wegweiser: welche Situation → welches Werkzeug (für Nicht-Entwickler) | immer wenn unsicher |
 | `/project-type` | Profil + Pflicht-Skills + Compliance-Checklisten setzen | einmalig zu Beginn |
 | `/stack-selection` | geführte Stack-Wahl, befüllt ARCHITECTURE | nach Profil |
 | `/plan` | Projektstand + Empfehlung für die Session | Session-Start |
@@ -66,6 +67,7 @@ entscheidet, welche Skills und Checks überhaupt gelten.
 | `/a11y-check` | Barrierefreiheit WCAG/BFSG | bei öffentlichen Web-Seiten |
 | `/deploy-staging` | Deploy auf Staging + Smoke-Test | nach grünem Review |
 | `/release` | Release-Prozess auf Production | wenn Staging stabil |
+| `/team-feature` | Agenten-Team für große Features (3–7× Kosten, opt-in) | nur bei großen Brocken |
 
 ## 3. Skills, Agents, Automatik
 
@@ -81,16 +83,18 @@ entscheidet, welche Skills und Checks überhaupt gelten.
 `compliance-auditor`, `db-expert`, `test-engineer`.
 
 **Hooks (aus `estores-core`-Plugin, laufen automatisch in Claude Code):**
-- PreToolUse/Bash → blockiert gefährliche Befehle
-- PreToolUse/Write|Edit → blockiert Secret-Leaks
-- PostToolUse/Write|Edit → Auto-Lint
+- PreToolUse/Bash → blockiert gefährliche Befehle (inkl. `git push` auf main/staging)
+- PreToolUse/Write|Edit|Read → blockiert Secret-Leaks und jeden Zugriff auf `.env*`
+- PostToolUse/Write|Edit → Auto-Lint der geänderten Datei
+- Zweite Verteidigungslinie: `.claude/settings.json` → `permissions.deny` (.env, SSH, AWS)
 
 **Echte Git-Hooks (`lefthook.yml`, laufen auch ohne Claude Code):**
 gitleaks (Secrets), Lint, Typecheck, Conventional-Commit-Zwang, Tests beim Push.
 
 **CI/CD (`.github/workflows/`):**
 - `ci.yml` → Typecheck, Lint, Tests, E2E, Deploy-Hooks
-- `security-scan.yml` → Dependency-Audit, TruffleHog, CodeQL (+ wöchentlich)
+- `security-scan.yml` → Dependency-Audit, gitleaks, CodeQL (+ wöchentlich)
+- `claude-review.yml` → automatisches Claude-Review jedes PRs (Secret ANTHROPIC_API_KEY nötig)
 - `web-quality.yml` → Lighthouse-Budgets (CWV/SEO/a11y) + pa11y (nur Web-Profile)
 
 ## 4. Qualitäts-Gates — wann welcher Check (richtige Reihenfolge)
@@ -125,6 +129,7 @@ die wiederverwendbare Claude-Intelligenz kommt zentral aus dem Marketplace.
 - `.gitleaks.toml` — Secret-Scan-Regeln (von lefthook + CI genutzt)
 - `knip.json` — findet toten Code, ungenutzte Exports und Dependencies (`npx knip`)
 - `.size-limit.json` — Bundle-Budgets, gekoppelt an Core Web Vitals (`npx size-limit`, auch in CI)
+- `docs/BACKLOG.md` — einzige Task-Quelle (von `/plan` gelesen, von `/create-feature` gepflegt)
 
 ## 6. Empfohlene Fremd-Plugins / MCP (nach Bedarf, kosten Kontext)
 - `commit-commands@claude-plugins-official`, `pr-review-toolkit@claude-plugins-official`

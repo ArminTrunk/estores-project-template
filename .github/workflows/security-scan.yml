@@ -8,24 +8,58 @@ on:
     - cron: '0 8 * * 1'  # Jeden Montag 8 Uhr
 
 jobs:
-  security:
+  secrets:
+    name: Secret Scan (gitleaks)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # gitleaks braucht die Historie
+      # Nutzt automatisch die .gitleaks.toml im Repo — dieselbe Config wie lefthook lokal.
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Dependency Audit
-        run: npm audit --audit-level=high
+  dependency-audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: npm audit
+        run: |
+          if [ -f package.json ]; then
+            npm audit --audit-level=high
+          else
+            echo "Kein package.json — Audit übersprungen (Stack noch nicht initialisiert)."
+          fi
         # PHP:    composer audit
         # Python: pip-audit
 
-      - name: Secret Scanning
-        uses: trufflesecurity/trufflehog@main
+  codeql:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      # CodeQL schlägt fehl, wenn es keinen Code der Zielsprache gibt —
+      # daher erst prüfen, ob JS/TS-Quellcode existiert (Stack initialisiert):
+      - id: check
+        name: Quellcode vorhanden?
+        run: |
+          if find . -path ./node_modules -prune -o \( -name '*.ts' -o -name '*.tsx' -o -name '*.js' -o -name '*.jsx' \) -print -quit | grep -q .; then
+            echo "code=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "code=no" >> "$GITHUB_OUTPUT"
+            echo "Kein JS/TS-Code gefunden — CodeQL übersprungen (Stack noch nicht initialisiert)."
+          fi
+      - uses: github/codeql-action/init@v3
+        if: steps.check.outputs.code == 'yes'
         with:
-          path: ./
-          base: ${{ github.event.repository.default_branch }}
-
-      - name: CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-        with:
-          languages: javascript, typescript
-          # Für andere Sprachen anpassen: python, java, ruby
+          languages: javascript-typescript
+          # Für andere Sprachen anpassen: python, java-kotlin, ruby, go
+      - uses: github/codeql-action/autobuild@v3
+        if: steps.check.outputs.code == 'yes'
+      - uses: github/codeql-action/analyze@v3
+        if: steps.check.outputs.code == 'yes'

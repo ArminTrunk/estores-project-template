@@ -11,6 +11,6 @@ Wir bestätigen den Eingang innerhalb von 48h und halten dich über den Status a
 - Abhängigkeiten werden über Dependabot + CI-Audit überwacht
 
 ## Unsere Maßnahmen (Auszug)
-- Secret-Scanning (TruffleHog) + Dependency-Audit in CI
+- Secret-Scanning (gitleaks) + Dependency-Audit + CodeQL in CI
 - Lokale Pre-Commit-Hooks (lefthook) gegen Secrets & gefährliche Befehle
-- Security-Header, Input-Validierung, Auth/RBAC (siehe `.claude/skills/security.md`)
+- Security-Header, Input-Validierung, Auth/RBAC (siehe Skill `security` im estores-core-Plugin)

@@ -1,8 +1,8 @@
 # Compliance: [Projektname]
 
 > Wird vom `/project-type` Command auf das gewählte **Profil** zugeschnitten.
-> Nicht zutreffende Blöcke entfernen. Quelle der Regeln: `.claude/skills/privacy-dsgvo.md`,
-> `.claude/skills/accessibility.md`, `.claude/skills/security.md`.
+> Nicht zutreffende Blöcke entfernen. Quelle der Regeln: Skills `privacy-dsgvo` + `accessibility`
+> (estores-compliance-Plugin) und `security` (estores-core-Plugin).
 
 **Profil:** [marketing-site / headless-cms-site / internal-tool / public-app-pii]
 **Verarbeitet Personendaten:** [ja / teilweise / nein]

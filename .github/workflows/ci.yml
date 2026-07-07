@@ -6,22 +6,35 @@ on:
   pull_request:
     branches: [develop, staging, main]
 
+# Alle Jobs laufen erst, wenn ein package.json existiert — so ist die CI in einem
+# frisch initialisierten Projekt nicht "rot ab Tag 1". Für PHP/Python-Stacks die
+# Bedingungen und Befehle nach /stack-selection anpassen.
+
 jobs:
   quality:
     name: Code Quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Stack vorhanden?
+        id: stack
+        run: echo "node=$([ -f package.json ] && echo yes || echo no)" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-node@v4
+        if: steps.stack.outputs.node == 'yes'
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
-      - run: npm ci
-      - run: npm run type-check
-      - run: npm run lint
-      - run: npm run test -- --coverage
-      - name: Upload Coverage
-        uses: codecov/codecov-action@v4
+      - if: steps.stack.outputs.node == 'yes'
+        run: npm ci
+      - if: steps.stack.outputs.node == 'yes'
+        run: npm run --if-present type-check
+      - if: steps.stack.outputs.node == 'yes'
+        run: npm run --if-present lint
+      - if: steps.stack.outputs.node == 'yes'
+        run: npm run --if-present test -- --coverage
+      # Codecov nur aktivieren wenn CODECOV_TOKEN als Secret gesetzt ist:
+      # - uses: codecov/codecov-action@v4
+      #   with: { token: ${{ secrets.CODECOV_TOKEN }} }
 
   e2e:
     name: E2E Tests
@@ -29,16 +42,24 @@ jobs:
     needs: [quality]
     steps:
       - uses: actions/checkout@v4
+      - name: Playwright konfiguriert?
+        id: pw
+        run: echo "ok=$([ -f playwright.config.ts ] || [ -f playwright.config.js ] && echo yes || echo no)" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-node@v4
+        if: steps.pw.outputs.ok == 'yes'
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: npm run build
-      - run: npx playwright test
+      - if: steps.pw.outputs.ok == 'yes'
+        run: npm ci
+      - if: steps.pw.outputs.ok == 'yes'
+        run: npx playwright install --with-deps chromium
+      - if: steps.pw.outputs.ok == 'yes'
+        run: npm run --if-present build
+      - if: steps.pw.outputs.ok == 'yes'
+        run: npx playwright test
       - uses: actions/upload-artifact@v4
-        if: failure()
+        if: failure() && steps.pw.outputs.ok == 'yes'
         with:
           name: playwright-report
           path: playwright-report/
