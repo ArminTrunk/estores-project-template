@@ -17,4 +17,10 @@ estores-Marketplace + `estores-core` installiert werden sollen → bestätigen, 
 /plugin install estores-compliance@estores
 /reload-plugins
 ```
+
+## Offizielle Anthropic-Plugins (Standard, einmal pro Projekt)
+```
+/plugin install commit-commands@claude-plugins-official
+/plugin install pr-review-toolkit@claude-plugins-official
+```
 Profil-Plugins werden von `/project-type` automatisch in `enabledPlugins` eingetragen.

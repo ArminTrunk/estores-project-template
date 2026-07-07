@@ -1,4 +1,9 @@
-# Session-Start Prompt
+# Session-Start Prompt (VERALTET)
+
+> Seit estores-core 2.1 injiziert ein **SessionStart-Hook** Backlog,
+> Prioritäten und letzte Entscheidungen automatisch in jede Session —
+> dieser manuelle Prompt ist nur noch Fallback für Umgebungen ohne Plugins.
+
 
 Kopiere diesen Prompt zu Beginn jeder neuen Claude Code Session:
 
