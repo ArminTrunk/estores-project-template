@@ -58,7 +58,7 @@ jobs:
         run: npm run --if-present build
       - if: steps.pw.outputs.ok == 'yes'
         run: npx playwright test
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure() && steps.pw.outputs.ok == 'yes'
         with:
           name: playwright-report
