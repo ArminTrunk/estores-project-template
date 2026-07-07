@@ -6,4 +6,4 @@ Testdateien gehören in die entsprechenden Unterordner:
 - `integration/` → Integration Tests (mehrere Komponenten zusammen)
 - `e2e/`         → End-to-End Tests (Playwright — ganzer User-Flow)
 
-Siehe `.claude/skills/testing.md` für Konventionen und Vorlagen.
+Siehe Skill `testing` (estores-core-Plugin) für Konventionen und Vorlagen.

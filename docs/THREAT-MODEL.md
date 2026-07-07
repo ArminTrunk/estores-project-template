@@ -2,7 +2,7 @@
 
 > Pflicht für Profil **public-app-pii**, empfohlen für **internal-tool**.
 > Lebendiges Dokument — bei Architektur-Änderungen aktualisieren.
-> Methode-Quelle: `.claude/skills/systems-analyzer.md` + `security.md`.
+> Methode-Quelle: Skills `systems-analyzer` + `security` (estores-core-Plugin).
 
 ## 1. Datenklassifizierung
 | Daten | Klasse (öffentlich/intern/PII/sensibel) | Speicherort | Verschlüsselung (at rest/in transit) |
