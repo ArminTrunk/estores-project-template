@@ -5,10 +5,13 @@
 
 - **Profil:** [marketing-site / headless-cms-site / internal-tool / public-app-pii]
 - **Verarbeitet Personendaten:** [ja / teilweise / nein]
-- **Pflicht-Skills:** [aus Profil-Matrix in commands/project-type.md]
+- **Pflicht-Skills:** [aus Profil-Matrix in /project-type]
 - **Compliance:** siehe `docs/COMPLIANCE.md` (+ `docs/THREAT-MODEL.md` bei public-app-pii)
 - **Claude-Bausteine:** Skills, Agents, Commands, Hooks und Verhaltens-Rules kommen aus den
   **estores-Plugins** (Marketplace, via `.claude/settings.json`) — nicht lokal im Repo. Siehe `.claude/PLUGINS.md`.
+
+## Verhaltensregeln (einzige Quelle: AGENTS.md)
+@AGENTS.md
 
 ## Projekt-Überblick
 - **Produkt**: [Kurzbeschreibung — was macht dieses Produkt?]
@@ -47,30 +50,7 @@
 - DB-Zugriff: [Prisma / Eloquent / SQLAlchemy / raw SQL / etc.]
 - API-Layer: [tRPC / REST / GraphQL / etc.]
 
-## Was NICHT tun
-- NIEMALS `console.log` / `dd()` / `print()` in Production-Code committen
-- NIEMALS `.env` Dateien committen
-- NIEMALS Dependencies ohne Absprache hinzufügen oder entfernen
-- NIEMALS direkt auf `main` pushen
-- NIEMALS Datenbankmigrationen ohne Review ausführen
-- NIEMALS Code schreiben ohne vorher den Plan erklärt zu haben
-- NIEMALS Personendaten (PII) in Logs, Error-Messages, URLs oder Analytics-Events
-- NIEMALS Tracking/Drittanbieter-Scripts vor Einwilligung laden
-- NIEMALS UI bauen, die nur per Maus bedienbar ist (Tastatur + Semantik Pflicht bei Web-Profilen)
-
-## Kommunikations-Stil
-- Antworten immer auf Deutsch
-- Technische Begriffe immer kurz erklären
-- Vor größeren Änderungen ankündigen und Bestätigung abwarten
-- Am Ende jeder Session: Zusammenfassung was gemacht wurde und was offen ist
-- Bei Unklarheiten: fragen statt raten
-
-## Aktuelle Sprint-Fokus
-[Wird aus context/current-priorities.md geladen — hier aktuellen Fokus eintragen]
-
-## Branching-Strategie
-- `main` → Production (protected)
-- `staging` → Staging-Umgebung
-- `develop` → Entwicklung
-- `feature/[ticket-id]-[name]` → Features
-- `hotfix/[ticket-id]-[name]` → Hotfixes
+## Aktuelle Prioritäten & Backlog
+- Sprint-Fokus (persönlich, gitignored):
+@context/current-priorities.md
+- Team-Backlog: `docs/BACKLOG.md` — einzige Task-Quelle, Status dort pflegen
