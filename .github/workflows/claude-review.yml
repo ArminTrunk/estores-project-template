@@ -11,6 +11,9 @@ on:
 
 jobs:
   review:
+    # Bot-PRs (Dependabot & Co.) überspringen — Versions-Bumps brauchen kein
+    # KI-Review, und die Action verweigert Bot-Actors ohnehin (spart API-Kosten).
+    if: github.event.pull_request.user.type != 'Bot'
     runs-on: ubuntu-latest
     permissions:
       contents: read
