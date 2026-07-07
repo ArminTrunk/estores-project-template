@@ -2,6 +2,11 @@ name: Web Quality (Performance · SEO · A11y)
 
 # Nur für Web-Profile relevant. Bei internal-tool ohne öffentliche Seiten
 # diesen Workflow deaktivieren/entfernen.
+#
+# WICHTIG: Die Checks sind hier ECHTE Gates (blockieren den PR bei Verstoß).
+# Die Budgets stehen in .lighthouserc.json / .pa11yci.json / .size-limit.json —
+# lieber Budgets anpassen als Gates aufweichen.
+
 on:
   pull_request:
     branches: [develop, staging, main]
@@ -10,41 +15,45 @@ jobs:
   lighthouse:
     name: Lighthouse CI (CWV + SEO + A11y Budgets)
     runs-on: ubuntu-latest
+    if: ${{ hashFiles('package.json') != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '20', cache: 'npm' }
+        with: { node-version: '22', cache: 'npm' }
       - run: npm ci
       - run: npm run build
       - name: Lighthouse CI
         run: |
           npm install -g @lhci/cli
-          lhci autorun || echo "Lighthouse-Budget verfehlt — Report prüfen"
-        # Budgets in .lighthouserc.json definieren
+          lhci autorun
+        # Budgets in .lighthouserc.json — "error"-Assertions blockieren den PR
 
   axe-a11y:
-    name: Accessibility (axe / pa11y)
+    name: Accessibility (pa11y)
     runs-on: ubuntu-latest
+    if: ${{ hashFiles('package.json') != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '20', cache: 'npm' }
+        with: { node-version: '22', cache: 'npm' }
       - run: npm ci
       - run: npm run build
       - name: pa11y-ci
         run: |
           npm install -g pa11y-ci
-          pa11y-ci || echo "A11y-Findings — Report prüfen"
+          npm run --if-present start & sleep 5
+          pa11y-ci
         # URLs/Schwellen in .pa11yci.json
 
   bundle-budget:
     name: Bundle-Budget (size-limit)
     runs-on: ubuntu-latest
+    if: ${{ hashFiles('.size-limit.json') != '' && hashFiles('package.json') != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '20', cache: 'npm' }
+        with: { node-version: '22', cache: 'npm' }
       - run: npm ci
       - run: npm run build
       - name: size-limit
-        run: npx size-limit || echo "Bundle-Budget überschritten — Report prüfen"
+        run: npx size-limit

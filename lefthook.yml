@@ -1,28 +1,39 @@
 # Installation: `npm i -D lefthook && npx lefthook install`
 # Greift bei jedem Commit/Push — unabhängig von Claude Code Hooks.
+#
+# Stufenmodell:
+#   pre-commit → schnell + weich (Flow nicht bremsen), NUR Secrets blockieren hart
+#   pre-push   → Typecheck HART (kaputte Typen verlassen den Rechner nicht)
+#   CI         → alles hart (siehe .github/workflows/)
 
 pre-commit:
   parallel: true
   commands:
     secrets:
       run: npx gitleaks protect --staged --redact --no-banner
-    lint:
-      glob: "*.{js,jsx,ts,tsx,php,py}"
-      run: |
-        # Sprach-spezifisch anpassen — Beispiele:
-        npx eslint {staged_files} --fix --quiet 2>/dev/null || true
-    typecheck:
-      glob: "*.{ts,tsx}"
-      run: npx tsc --noEmit --skipLibCheck 2>/dev/null || true
+    lint-js:
+      glob: "*.{js,jsx,ts,tsx}"
+      run: npx eslint {staged_files} --fix --quiet 2>/dev/null || true
+    # Sprach-spezifisch ergänzen:
+    # lint-php:
+    #   glob: "*.php"
+    #   run: ./vendor/bin/pint {staged_files} 2>/dev/null || true
+    # lint-py:
+    #   glob: "*.py"
+    #   run: ruff check {staged_files} --fix 2>/dev/null || true
 
 commit-msg:
   commands:
     conventional:
       run: |
         head -1 "{1}" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore)(\(.+\))?!?: .+' \
-          || { echo "❌ Commit-Message muss Conventional Commits folgen: type(scope): beschreibung"; exit 1; }
+          || { echo "FEHLER: Commit-Message muss Conventional Commits folgen: type(scope): beschreibung"; exit 1; }
 
 pre-push:
   commands:
+    typecheck:
+      # HART — blockiert den Push bei Typ-Fehlern (nur wenn TypeScript-Projekt)
+      run: '[ ! -f tsconfig.json ] || npx tsc --noEmit --skipLibCheck'
     tests:
-      run: npm test --silent || true
+      # Läuft nur, wenn ein test-Script existiert — dann aber verbindlich
+      run: '[ ! -f package.json ] || npm run --if-present test --silent'
