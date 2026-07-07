@@ -55,6 +55,7 @@ entscheidet, welche Skills und Checks überhaupt gelten.
 
 | Command | Was | Wann |
 |---------|-----|------|
+| `/hilfe` | Wegweiser: welche Situation → welches Werkzeug (für Nicht-Entwickler) | immer wenn unsicher |
 | `/project-type` | Profil + Pflicht-Skills + Compliance-Checklisten setzen | einmalig zu Beginn |
 | `/stack-selection` | geführte Stack-Wahl, befüllt ARCHITECTURE | nach Profil |
 | `/plan` | Projektstand + Empfehlung für die Session | Session-Start |
@@ -66,6 +67,7 @@ entscheidet, welche Skills und Checks überhaupt gelten.
 | `/a11y-check` | Barrierefreiheit WCAG/BFSG | bei öffentlichen Web-Seiten |
 | `/deploy-staging` | Deploy auf Staging + Smoke-Test | nach grünem Review |
 | `/release` | Release-Prozess auf Production | wenn Staging stabil |
+| `/team-feature` | Agenten-Team für große Features (3–7× Kosten, opt-in) | nur bei großen Brocken |
 
 ## 3. Skills, Agents, Automatik
 
