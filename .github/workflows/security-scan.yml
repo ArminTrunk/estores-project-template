@@ -43,9 +43,23 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+      # CodeQL schlägt fehl, wenn es keinen Code der Zielsprache gibt —
+      # daher erst prüfen, ob JS/TS-Quellcode existiert (Stack initialisiert):
+      - id: check
+        name: Quellcode vorhanden?
+        run: |
+          if find . -path ./node_modules -prune -o \( -name '*.ts' -o -name '*.tsx' -o -name '*.js' -o -name '*.jsx' \) -print -quit | grep -q .; then
+            echo "code=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "code=no" >> "$GITHUB_OUTPUT"
+            echo "Kein JS/TS-Code gefunden — CodeQL übersprungen (Stack noch nicht initialisiert)."
+          fi
       - uses: github/codeql-action/init@v3
+        if: steps.check.outputs.code == 'yes'
         with:
           languages: javascript-typescript
           # Für andere Sprachen anpassen: python, java-kotlin, ruby, go
       - uses: github/codeql-action/autobuild@v3
+        if: steps.check.outputs.code == 'yes'
       - uses: github/codeql-action/analyze@v3
+        if: steps.check.outputs.code == 'yes'
