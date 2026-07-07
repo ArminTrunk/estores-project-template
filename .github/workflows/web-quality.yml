@@ -3,19 +3,37 @@ name: Web Quality (Performance · SEO · A11y)
 # Nur für Web-Profile relevant. Bei internal-tool ohne öffentliche Seiten
 # diesen Workflow deaktivieren/entfernen.
 #
-# WICHTIG: Die Checks sind hier ECHTE Gates (blockieren den PR bei Verstoß).
-# Die Budgets stehen in .lighthouserc.json / .pa11yci.json / .size-limit.json —
+# WICHTIG: Die Checks sind ECHTE Gates (blockieren den PR bei Verstoß).
+# Budgets stehen in .lighthouserc.json / .pa11yci.json / .size-limit.json —
 # lieber Budgets anpassen als Gates aufweichen.
+#
+# Der detect-Job prüft, ob der Stack schon initialisiert ist (package.json) —
+# vorher werden alle Gates sauber übersprungen statt rot zu laufen.
+# (hashFiles funktioniert NICHT in Job-Level-ifs — daher dieses Muster.)
 
 on:
   pull_request:
     branches: [develop, staging, main]
 
 jobs:
+  detect:
+    name: Stack erkennen
+    runs-on: ubuntu-latest
+    outputs:
+      node: ${{ steps.check.outputs.node }}
+      sizelimit: ${{ steps.check.outputs.sizelimit }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: check
+        run: |
+          echo "node=$([ -f package.json ] && echo yes || echo no)" >> "$GITHUB_OUTPUT"
+          echo "sizelimit=$([ -f .size-limit.json ] && echo yes || echo no)" >> "$GITHUB_OUTPUT"
+
   lighthouse:
     name: Lighthouse CI (CWV + SEO + A11y Budgets)
     runs-on: ubuntu-latest
-    if: ${{ hashFiles('package.json') != '' }}
+    needs: detect
+    if: needs.detect.outputs.node == 'yes'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -31,7 +49,8 @@ jobs:
   axe-a11y:
     name: Accessibility (pa11y)
     runs-on: ubuntu-latest
-    if: ${{ hashFiles('package.json') != '' }}
+    needs: detect
+    if: needs.detect.outputs.node == 'yes'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -48,7 +67,8 @@ jobs:
   bundle-budget:
     name: Bundle-Budget (size-limit)
     runs-on: ubuntu-latest
-    if: ${{ hashFiles('.size-limit.json') != '' && hashFiles('package.json') != '' }}
+    needs: detect
+    if: needs.detect.outputs.node == 'yes' && needs.detect.outputs.sizelimit == 'yes'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
