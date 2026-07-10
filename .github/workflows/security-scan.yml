@@ -16,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0   # gitleaks braucht die Historie
       # Nutzt automatisch die .gitleaks.toml im Repo — dieselbe Config wie lefthook lokal.
-      - uses: gitleaks/gitleaks-action@v2
+      - uses: gitleaks/gitleaks-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
