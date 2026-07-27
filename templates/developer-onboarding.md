@@ -23,7 +23,7 @@ Willkommen im Team! Diese Anleitung bringt dich in ~4 Stunden auf Stand.
 ### Claude Code einrichten
 - [ ] Claude Code installieren: `npm install -g @anthropic-ai/claude-code`
 - [ ] `claude /init` ausführen
-- [ ] `/plan` ausführen — bekommst du einen sinnvollen Überblick?
+- [ ] `/session-start` ausführen — bekommst du einen sinnvollen Überblick?
 
 ---
 

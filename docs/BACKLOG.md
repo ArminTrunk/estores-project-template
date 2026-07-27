@@ -1,6 +1,6 @@
 # Backlog — [Projektname]
 
-> Einzige Quelle für offene Tasks. Wird von `/plan` gelesen und von `/create-feature`
+> Einzige Quelle für offene Tasks. Wird von `/session-start` gelesen und von `/create-feature`
 > aktualisiert. Committed — für das ganze Team sichtbar.
 > Task-IDs fortlaufend vergeben (`T-001`, `T-002`, …) und in Branches/Commits referenzieren.
 

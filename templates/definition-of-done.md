@@ -11,7 +11,7 @@ Ein Task/PR ist erst „fertig", wenn ALLE zutreffenden Punkte erfüllt sind.
 - [ ] Tests für neue Logik (Happy Path + Edge + Error), Suite grün
 - [ ] CHANGELOG.md [Unreleased] aktualisiert
 - [ ] Conventional-Commit-Message
-- [ ] Selbst-Review / `/review-pr` ohne kritische Findings
+- [ ] Selbst-Review / `/pr-review` ohne kritische Findings
 
 ## Bei Personendaten (internal-tool, public-app-pii)
 - [ ] `/privacy-check` ohne 🔴 — Rechtsgrundlage + Minimierung geprüft
