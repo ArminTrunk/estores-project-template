@@ -32,7 +32,7 @@ done
 
 # 3) Persönliche Dateien anlegen (gitignored)
 mkdir -p context
-[[ -f .env.local ]] || { [[ -f .env.example ]] && cp .env.example .env.local; }
+if [[ ! -f .env.local && -f .env.example ]]; then cp .env.example .env.local; fi
 [[ -f context/current-priorities.md ]] || echo "# Aktuelle Prioritäten — $NAME" > context/current-priorities.md
 
 # 4) Template-only Dateien entfernen (dürfen im Projekt nicht auftauchen)
