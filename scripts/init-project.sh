@@ -40,22 +40,26 @@ rm -f TEMPLATE-USAGE.md UPGRADE-v2.md templates/README.project.md
 
 # 5) Optional: GitHub-Branch-Schutz einrichten (Ruleset aus .github/rulesets/)
 #    Braucht: gh CLI eingeloggt + Repo bereits auf GitHub gepusht.
-if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1 && [[ -f .github/rulesets/branch-protection.json ]]; then
+RULESET_HINWEIS="Nachholen: GitHub → Settings → Rules → Import → .github/rulesets/branch-protection.json"
+if [[ ! -f .github/rulesets/branch-protection.json ]]; then
+  echo "Hinweis: Branch-Schutz übersprungen (Ruleset-Datei .github/rulesets/branch-protection.json nicht gefunden)."
+elif ! command -v gh >/dev/null 2>&1 || ! gh auth status >/dev/null 2>&1; then
+  echo "Hinweis: Branch-Schutz übersprungen (gh fehlt oder nicht eingeloggt: brew install gh && gh auth login)."
+  echo "         $RULESET_HINWEIS"
+else
   REPO="$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null || true)"
   if [[ -n "$REPO" ]]; then
     read -rp "Branch-Schutz (Ruleset) für $REPO jetzt einrichten? [j/N] " ANTWORT
     if [[ "$ANTWORT" =~ ^[jJyY]$ ]]; then
       gh api "repos/$REPO/rulesets" --method POST --input .github/rulesets/branch-protection.json \
         && echo "Ruleset 'Schutz main + staging' aktiv." \
-        || echo "WARNUNG: Ruleset konnte nicht angelegt werden (Rechte? Branches vorhanden?). Manuell: GitHub → Settings → Rules → Import."
+        || echo "WARNUNG: Ruleset konnte nicht angelegt werden (Rechte? Branches vorhanden?). $RULESET_HINWEIS"
+    else
+      echo "Hinweis: Branch-Schutz auf Wunsch übersprungen. $RULESET_HINWEIS"
     fi
   else
-    echo "Hinweis: Branch-Schutz übersprungen (Repo noch nicht auf GitHub gepusht)."
-    echo "         Nachholen: GitHub → Settings → Rules → Import → .github/rulesets/branch-protection.json"
+    echo "Hinweis: Branch-Schutz übersprungen (Repo noch nicht auf GitHub gepusht). $RULESET_HINWEIS"
   fi
-else
-  echo "Hinweis: Branch-Schutz übersprungen (gh fehlt oder nicht eingeloggt: brew install gh && gh auth login)."
-  echo "         Nachholen: GitHub → Settings → Rules → Import → .github/rulesets/branch-protection.json"
 fi
 
 echo "Fertig. Nächste Schritte:"
