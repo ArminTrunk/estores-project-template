@@ -102,12 +102,12 @@ jobs:
             echo "code=no" >> "$GITHUB_OUTPUT"
             echo "Kein JS/TS-Code gefunden — CodeQL übersprungen (Stack noch nicht initialisiert)."
           fi
-      - uses: github/codeql-action/init@c54b30b7df092240050e69945842bc67aee0f0f4 # v4.37.3
+      - uses: github/codeql-action/init@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 # v4.37.3
         if: steps.check.outputs.code == 'yes'
         with:
           languages: javascript-typescript
           # Für andere Sprachen anpassen: python, java-kotlin, ruby, go
-      - uses: github/codeql-action/autobuild@c54b30b7df092240050e69945842bc67aee0f0f4 # v4.37.3
+      - uses: github/codeql-action/autobuild@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 # v4.37.3
         if: steps.check.outputs.code == 'yes'
-      - uses: github/codeql-action/analyze@c54b30b7df092240050e69945842bc67aee0f0f4 # v4.37.3
+      - uses: github/codeql-action/analyze@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 # v4.37.3
         if: steps.check.outputs.code == 'yes'
