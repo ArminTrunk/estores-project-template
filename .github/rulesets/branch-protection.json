@@ -4,13 +4,20 @@
   "enforcement": "active",
   "conditions": {
     "ref_name": {
-      "include": ["refs/heads/main", "refs/heads/staging"],
+      "include": [
+        "refs/heads/main",
+        "refs/heads/staging"
+      ],
       "exclude": []
     }
   },
   "rules": [
-    { "type": "deletion" },
-    { "type": "non_fast_forward" },
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "non_fast_forward"
+    },
     {
       "type": "pull_request",
       "parameters": {
@@ -26,8 +33,18 @@
       "parameters": {
         "strict_required_status_checks_policy": false,
         "required_status_checks": [
-          { "context": "Code Quality" },
-          { "context": "Secret Scan (gitleaks)" }
+          {
+            "context": "Code Quality"
+          },
+          {
+            "context": "Secret Scan (gitleaks)"
+          },
+          {
+            "context": "Shell-Skripte (shellcheck)"
+          },
+          {
+            "context": "PR-Titel (Conventional)"
+          }
         ]
       }
     }

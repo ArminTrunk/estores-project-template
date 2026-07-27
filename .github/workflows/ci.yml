@@ -55,8 +55,12 @@ jobs:
       - name: shellcheck
         # shellcheck ist auf ubuntu-latest vorinstalliert. Kein Skript vorhanden → sauber überspringen.
         run: |
-          mapfile -t files < <(find . -path ./node_modules -prune -o -name '*.sh' -print)
-          if [ "${#files[@]}" -eq 0 ]; then echo "Keine Shell-Skripte gefunden."; else shellcheck "${files[@]}"; fi
+          mapfile -d '' -t files < <(
+            find . \( -name node_modules -o -name vendor -o -name .venv -o -name .git \) -prune -o \
+                 -type f \( -name '*.sh' -o -name '*.bash' \) -print0
+          )
+          # -S warning: warning+error blockieren (set-e-Fallen, Trap-Scope), reine Stil-Hinweise nicht
+          if [ "${#files[@]}" -eq 0 ]; then echo "Keine Shell-Skripte gefunden."; else shellcheck -S warning "${files[@]}"; fi
 
   quality:
     name: Code Quality
