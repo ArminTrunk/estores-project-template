@@ -13,9 +13,13 @@ Welche Bausteine pro Projekt gelten, steuert das **Profil** (`/project-type`).
 
 ```
 Use this template (GitHub)  →  Repo holen  →  ./scripts/init-project.sh "Name"
-→  brew install gitleaks  →  npm i -D lefthook && npx lefthook install
+→  brew install gitleaks gh  (+ einmalig: gh auth login)
+→  npm i -D lefthook && npx lefthook install
 →  claude  →  /project-type  →  /stack-selection  →  /plan
 ```
+
+> `gh` (GitHub CLI) wird von `/deploy-staging`, `/release` und dem Ruleset-Import
+> im init-Skript benutzt — einmal installieren und mit `gh auth login` anmelden.
 
 > Alternativ ohne lokale Installation: **GitHub Codespaces / Dev Container** öffnen —
 > `.devcontainer/` bringt Node 24, gitleaks, gh und Claude Code fertig mit.

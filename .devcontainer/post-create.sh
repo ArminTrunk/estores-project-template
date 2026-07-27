@@ -2,7 +2,7 @@
 # Dev-Container-Setup: gitleaks (Binary) + lefthook aktivieren, falls Stack initialisiert.
 set -euo pipefail
 
-# 1) gitleaks installieren (versioniert + Checksum-los bewusst vermieden: offizielles Release-Binary)
+# 1) gitleaks installieren — offizielles Release-Binary, auf Version gepinnt
 GITLEAKS_VERSION="8.30.1"
 if ! command -v gitleaks >/dev/null 2>&1; then
   ARCH="$(uname -m)"; case "$ARCH" in x86_64) ARCH=x64 ;; aarch64|arm64) ARCH=arm64 ;; esac
