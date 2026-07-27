@@ -97,8 +97,10 @@ cp .mcp.json.example .mcp.json              # dann echte Tokens via Env
   offizieller GitHub-MCP-Server (Remote, `api.githubcopilot.com/mcp/`).
 - `.env.example`: an .mcp.json angeglichen (GITHUB_PAT, SUPABASE, DATAFORSEO);
   Brave entfernt (Server archiviert, war nirgends referenziert).
-- `.claude/settings.json`: Deny-Lücke geschlossen — `Read(./.env.*)` als Wildcard
-  (vorher fehlten z. B. `.env.development`, `.env.test`); Fallback-Modelle aktualisiert
+- `.claude/settings.json`: Deny-Liste um die realen `.env`-Varianten ergänzt (`.env.local`,
+  `.env.*.local`, `.env.development/production/staging/test` — Root + verschachtelt;
+  `.env.example` bleibt bewusst lesbar; neue `.env.<mode>`-Namen laut AGENTS.md nachtragen);
+  Fallback-Modelle aktualisiert
   (`claude-sonnet-5`, `claude-haiku-4-5`); `~/.config/gh` zusätzlich geschützt.
 - `.editorconfig`: `[*.{py}]` → `[*.py]`.
 

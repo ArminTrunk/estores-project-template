@@ -10,7 +10,7 @@ Willkommen im Team! Diese Anleitung bringt dich in ~4 Stunden auf Stand.
 - [ ] `docs/DISCOVERY.md` lesen — Was wird gebaut und warum?
 - [ ] `docs/ARCHITECTURE.md` lesen — Welche Technologien und warum?
 - [ ] `CLAUDE.md` lesen — Wie arbeiten wir?
-- [ ] `context/team.md` lesen — Wer ist wer?
+- [ ] Abschnitt „Wichtige Kontakte" (unten in dieser Datei) lesen — Wer ist wer?
 - [ ] `decisions/log.md` lesen — Welche wichtigen Entscheidungen wurden getroffen?
 
 ### Lokal einrichten
