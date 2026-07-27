@@ -12,10 +12,15 @@ Welche Bausteine pro Projekt gelten, steuert das **Profil** (`/project-type`).
 ## 0. Schnellstart (zum Merken)
 
 ```
-Use this template (GitHub)  →  Repo holen  →  ./scripts/init-project.sh "Name"
-→  brew install gitleaks  →  npm i -D lefthook && npx lefthook install
+Use this template (GitHub)  →  Repo holen
+→  brew install gitleaks gh  (+ einmalig: gh auth login)
+→  ./scripts/init-project.sh "Name"
+→  npm i -D lefthook && npx lefthook install
 →  claude  →  /project-type  →  /stack-selection  →  /plan
 ```
+
+> `gh` (GitHub CLI) wird von `/deploy-staging`, `/release` und dem Ruleset-Import
+> im init-Skript benutzt — einmal installieren und mit `gh auth login` anmelden.
 
 > Alternativ ohne lokale Installation: **GitHub Codespaces / Dev Container** öffnen —
 > `.devcontainer/` bringt Node 24, gitleaks, gh und Claude Code fertig mit.
@@ -35,8 +40,9 @@ Use this template (GitHub)  →  Repo holen  →  ./scripts/init-project.sh "Nam
 |---|---------|--------|----------|
 | 1 | Repo aus Template erzeugen | GitHub „Use this template" → „Create a new repository" | Eigenes Projekt-Repo |
 | 1b | Repo auf den Rechner holen | Terminal `git clone …` **oder** Cursor `Cmd+Shift+P` → `Git: Clone` | Projekt lokal offen |
-| 2 | **Projekt initialisieren** | `./scripts/init-project.sh "Projektname"` | README→Projekt-README, Template-Meta entfernt, `context/` + `.env.local` angelegt |
-| 3 | Git-Hooks aktivieren | `brew install gitleaks` + `npm i -D lefthook && npx lefthook install` | Secrets-/Lint-/Commit-Hooks lokal (gitleaks ist ein Binary, KEIN npm-Paket) |
+| 1c | Werkzeuge installieren | `brew install gitleaks gh` + einmalig `gh auth login` | gitleaks (Secret-Scan) und gh (Ruleset-Import in Schritt 2, `/deploy-staging`, `/release`) |
+| 2 | **Projekt initialisieren** | `./scripts/init-project.sh "Projektname"` | README→Projekt-README, Template-Meta entfernt, `context/` + `.env.local` angelegt, Branch-Schutz-Import (braucht gh aus 1c) |
+| 3 | Git-Hooks aktivieren | `npm i -D lefthook && npx lefthook install` | Secrets-/Lint-/Commit-Hooks lokal (nutzen gitleaks aus 1c — Binary, KEIN npm-Paket) |
 | 4 | Claude Code öffnen + Ordner vertrauen | `claude` | Auto-Prompt installiert estores-Marketplace + `estores-core` (Fallback: `.claude/PLUGINS.md`) |
 | 5 | Claude Code initialisieren | `claude /init` | Claude liest CLAUDE.md + Plugins |
 | 6 | **Profil festlegen** | `/project-type` | Pflicht-Skills + Compliance-Checklisten gesetzt |

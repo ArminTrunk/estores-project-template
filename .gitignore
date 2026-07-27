@@ -8,9 +8,7 @@ context/
 
 # Environment / Secrets
 .env
-.env.local
-.env.staging
-.env.production
+.env.*
 !.env.example
 
 # Logs
