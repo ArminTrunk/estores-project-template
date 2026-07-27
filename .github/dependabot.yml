@@ -1,17 +1,27 @@
 version: 2
 updates:
-  # npm — wöchentlich, gruppiert um PR-Flut zu vermeiden
+  # npm — wöchentlich, gruppiert um PR-Flut zu vermeiden.
+  # cooldown = Supply-Chain-Schutz: neue Versionen erst nach N Tagen übernehmen
+  # (kompromittierte Releases werden meist innerhalb weniger Tage entdeckt/zurückgezogen).
   - package-ecosystem: "npm"
     directory: "/"
     schedule: { interval: "weekly" }
     open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
     groups:
       minor-and-patch:
         update-types: ["minor", "patch"]
-  # GitHub Actions selbst aktuell halten
+  # GitHub Actions selbst aktuell halten (aktualisiert auch SHA-gepinnte Actions)
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule: { interval: "weekly" }
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ["*"]
   # Bei PHP/Python entsprechend ergänzen:
   # - package-ecosystem: "composer"
   # - package-ecosystem: "pip"

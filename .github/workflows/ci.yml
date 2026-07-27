@@ -6,23 +6,59 @@ on:
   pull_request:
     branches: [develop, staging, main]
 
+# Least-Privilege: Workflows bekommen nur Leserechte; Jobs erweitern bei Bedarf.
+permissions:
+  contents: read
+
+# Überholte Läufe auf demselben PR abbrechen (spart Minuten + Wartezeit).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 # Alle Jobs laufen erst, wenn ein package.json existiert — so ist die CI in einem
 # frisch initialisierten Projekt nicht "rot ab Tag 1". Für PHP/Python-Stacks die
 # Bedingungen und Befehle nach /stack-selection anpassen.
+# Node-Version: EINZIGE Quelle ist .nvmrc (setup-node liest sie via node-version-file).
 
 jobs:
+  pr-title:
+    name: PR-Titel (Conventional)
+    # Nur bei PRs — sichert saubere Historie auch bei Squash-Merges.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+      - uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50 # v6.1.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            chore
+
   quality:
     name: Code Quality
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Stack vorhanden?
         id: stack
         run: echo "node=$([ -f package.json ] && echo yes || echo no)" >> "$GITHUB_OUTPUT"
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         if: steps.stack.outputs.node == 'yes'
         with:
-          node-version: '22'
+          node-version-file: '.nvmrc'
           cache: 'npm'
       - if: steps.stack.outputs.node == 'yes'
         run: npm ci
@@ -41,14 +77,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: [quality]
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Playwright konfiguriert?
         id: pw
-        run: echo "ok=$([ -f playwright.config.ts ] || [ -f playwright.config.js ] && echo yes || echo no)" >> "$GITHUB_OUTPUT"
-      - uses: actions/setup-node@v6
+        run: echo "ok=$({ [ -f playwright.config.ts ] || [ -f playwright.config.js ]; } && echo yes || echo no)" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         if: steps.pw.outputs.ok == 'yes'
         with:
-          node-version: '22'
+          node-version-file: '.nvmrc'
           cache: 'npm'
       - if: steps.pw.outputs.ok == 'yes'
         run: npm ci
@@ -58,7 +96,7 @@ jobs:
         run: npm run --if-present build
       - if: steps.pw.outputs.ok == 'yes'
         run: npx playwright test
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: failure() && steps.pw.outputs.ok == 'yes'
         with:
           name: playwright-report
@@ -70,7 +108,9 @@ jobs:
     needs: [quality, e2e]
     if: github.ref == 'refs/heads/staging'
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       # Deploy-Step je nach Ziel einkommentieren:
       # Vercel:  run: npx vercel --token ${{ secrets.VERCEL_TOKEN }}
       # Coolify: run: curl -X POST ${{ secrets.COOLIFY_WEBHOOK }}
@@ -83,5 +123,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     environment: production
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       # Gleiche Deploy-Optionen wie Staging

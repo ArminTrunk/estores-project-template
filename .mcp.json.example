@@ -1,5 +1,5 @@
 {
-  "_hinweis": "Kopiere zu .mcp.json (gitignored) und trage echte Tokens via Env ein. Nur benötigte Server behalten.",
+  "_hinweis": "Kopiere zu .mcp.json (gitignored) und trage echte Tokens via Env ein (${VAR}-Expansion wird von Claude Code unterstützt). Nur benötigte Server behalten.",
   "mcpServers": {
     "supabase": {
       "command": "npx",
@@ -17,14 +17,12 @@
       "_hinweis": "EU-Region für DSGVO"
     },
     "github": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-github"
-      ],
-      "env": {
-        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
-      }
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${GITHUB_PAT}"
+      },
+      "_hinweis": "Offizieller GitHub-MCP-Server (Remote). Der alte @modelcontextprotocol/server-github ist archiviert — nicht mehr verwenden. GITHUB_PAT = Fine-grained PAT mit minimalen Scopes."
     },
     "dataforseo": {
       "command": "npx",

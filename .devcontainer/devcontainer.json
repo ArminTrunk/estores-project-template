@@ -1,0 +1,21 @@
+{
+  "name": "EStores Projekt (Node 24)",
+  "_hinweis": "Reproduzierbare Entwicklungsumgebung — für GitHub Codespaces oder VS Code Dev Containers. Node-Version im image-Tag synchron zu .nvmrc halten. Für PHP/Python-Stacks das Image nach /stack-selection tauschen.",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:24",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers-extra/features/claude-code:2": {}
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "editorconfig.editorconfig",
+        "dbaeumer.vscode-eslint",
+        "usernamehw.errorlens",
+        "github.vscode-github-actions",
+        "anthropic.claude-code"
+      ]
+    }
+  }
+}

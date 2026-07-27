@@ -1,0 +1,13 @@
+{
+  "_hinweis": "Empfohlene Extensions für VS Code / Cursor — werden beim Öffnen des Projekts vorgeschlagen. Stack-spezifische (Tailwind, Prisma, PHP …) nach /stack-selection ergänzen.",
+  "recommendations": [
+    "editorconfig.editorconfig",
+    "dbaeumer.vscode-eslint",
+    "usernamehw.errorlens",
+    "eamodio.gitlens",
+    "streetsidesoftware.code-spell-checker",
+    "streetsidesoftware.code-spell-checker-german",
+    "github.vscode-github-actions",
+    "anthropic.claude-code"
+  ]
+}

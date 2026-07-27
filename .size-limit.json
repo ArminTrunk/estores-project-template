@@ -1,6 +1,6 @@
 [
   {
-    "_hinweis": "Pfade an Build-Output anpassen (dist/.next). Budgets klein halten = guter LCP/INP.",
+    "_hinweis": "Pfade an Build-Output anpassen (dist/.next). Budgets klein halten = guter LCP/INP. Voraussetzung im Projekt: npm i -D size-limit @size-limit/file",
     "name": "JS gesamt (initial)",
     "path": ["dist/**/*.js", ".next/static/**/*.js"],
     "limit": "180 kB",
