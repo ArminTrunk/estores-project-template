@@ -18,6 +18,8 @@
 - Direkt auf `main` oder `staging` pushen
 - Datenbankmigrationen ohne explizite Bestätigung ausführen
 - `.env`-Dateien lesen, erstellen oder modifizieren (Ausnahme: `.env.example`)
+  — Hinweis: die Deny-Liste in `.claude/settings.json` zählt Varianten auf (Negation ist
+  dort nicht möglich); nutzt ein neuer Stack weitere `.env.<mode>`-Namen, dort nachtragen
 - Dependencies hinzufügen oder entfernen ohne Bestätigung
 - Production-Deploys triggern (nur via `/release`)
 - `console.log` / `dd()` / `print()` in Production-Code committen

@@ -4,26 +4,28 @@ set -euo pipefail
 
 # 1) gitleaks installieren — offizielles Release-Binary, versions-gepinnt + SHA256-verifiziert
 GITLEAKS_VERSION="8.30.1"
-GITLEAKS_OK=1
-if ! command -v gitleaks >/dev/null 2>&1; then
+install_gitleaks() {
+  local ARCH TMP TARBALL BASE
   ARCH="$(uname -m)"
   case "$ARCH" in
     x86_64) ARCH=x64 ;;
     aarch64|arm64) ARCH=arm64 ;;
-    *) echo "WARNUNG: Nicht unterstützte Architektur '$ARCH' — gitleaks bitte manuell installieren."; GITLEAKS_OK=0 ;;
+    *) echo "WARNUNG: Nicht unterstützte Architektur '$ARCH' — gitleaks bitte manuell installieren." >&2; return 0 ;;
   esac
-fi
-if [ "$GITLEAKS_OK" -eq 1 ] && ! command -v gitleaks >/dev/null 2>&1; then
   TMP="$(mktemp -d)"
+  trap 'rm -rf "$TMP"' EXIT
   TARBALL="gitleaks_${GITLEAKS_VERSION}_linux_${ARCH}.tar.gz"
   BASE="https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}"
   curl -fsSL -o "$TMP/$TARBALL" "$BASE/$TARBALL"
   curl -fsSL -o "$TMP/checksums.txt" "$BASE/gitleaks_${GITLEAKS_VERSION}_checksums.txt"
-  (cd "$TMP" && sha256sum --check --ignore-missing checksums.txt)  # bricht bei Manipulation ab (set -e)
+  # stellt sicher, dass das Tarball dem veröffentlichten Hash entspricht (bricht unter set -e ab)
+  (cd "$TMP" && sha256sum --check --ignore-missing checksums.txt)
   tar -xzf "$TMP/$TARBALL" -C "$TMP" gitleaks
   sudo install -m 0755 "$TMP/gitleaks" /usr/local/bin/gitleaks
-  rm -rf "$TMP"
   echo "gitleaks v${GITLEAKS_VERSION} installiert (Checksum verifiziert)."
+}
+if ! command -v gitleaks >/dev/null 2>&1; then
+  install_gitleaks
 fi
 
 # 2) Git-Hooks aktivieren (erst sinnvoll, wenn package.json existiert)
