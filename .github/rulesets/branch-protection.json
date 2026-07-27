@@ -34,16 +34,20 @@
         "strict_required_status_checks_policy": false,
         "required_status_checks": [
           {
-            "context": "Code Quality"
+            "context": "Code Quality",
+            "integration_id": 15368
           },
           {
-            "context": "Secret Scan (gitleaks)"
+            "context": "Secret Scan (gitleaks)",
+            "integration_id": 15368
           },
           {
-            "context": "Shell-Skripte (shellcheck)"
+            "context": "Shell-Skripte (shellcheck)",
+            "integration_id": 15368
           },
           {
-            "context": "PR-Titel (Conventional)"
+            "context": "PR-Titel (Conventional)",
+            "integration_id": 15368
           }
         ]
       }
