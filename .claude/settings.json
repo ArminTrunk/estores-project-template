@@ -57,6 +57,10 @@
       "Edit(./**/.env.test)",
       "Read(./secrets/**)",
       "Read(./**/secrets/**)",
+      "Edit(./**/secrets/**)",
+      "Edit(./secrets/**)",
+      "Write(./**/secrets/**)",
+      "Write(./secrets/**)",
       "Read(~/.ssh/**)",
       "Read(~/.aws/**)",
       "Read(~/.config/gh/**)"

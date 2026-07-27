@@ -4,13 +4,16 @@ set -euo pipefail
 
 # 1) gitleaks installieren — offizielles Release-Binary, versions-gepinnt + SHA256-verifiziert
 GITLEAKS_VERSION="8.30.1"
+GITLEAKS_OK=1
 if ! command -v gitleaks >/dev/null 2>&1; then
   ARCH="$(uname -m)"
   case "$ARCH" in
     x86_64) ARCH=x64 ;;
     aarch64|arm64) ARCH=arm64 ;;
-    *) echo "WARNUNG: Nicht unterstützte Architektur '$ARCH' — gitleaks bitte manuell installieren."; exit 0 ;;
+    *) echo "WARNUNG: Nicht unterstützte Architektur '$ARCH' — gitleaks bitte manuell installieren."; GITLEAKS_OK=0 ;;
   esac
+fi
+if [ "$GITLEAKS_OK" -eq 1 ] && ! command -v gitleaks >/dev/null 2>&1; then
   TMP="$(mktemp -d)"
   TARBALL="gitleaks_${GITLEAKS_VERSION}_linux_${ARCH}.tar.gz"
   BASE="https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}"
