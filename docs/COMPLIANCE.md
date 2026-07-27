@@ -44,7 +44,7 @@
 - [ ] axe/pa11y/Lighthouse-a11y in CI grün
 - [ ] Manueller Tastatur- + Screenreader-Stichproben-Durchlauf
 
-## 3. Security  (alle Profile — siehe skills/security.md)
+## 3. Security  (alle Profile — siehe Skill `security`, estores-core-Plugin)
 - [ ] Input-Validierung an allen Eingängen
 - [ ] Auth/RBAC auf allen geschützten Routen
 - [ ] Security-Header + CORS korrekt
@@ -52,7 +52,7 @@
 - [ ] Dependency-Audit grün (CI)
 - [ ] Secret-Scan grün (CI)
 
-## 4. SEO / Performance  (Web-Profile — siehe skills/seo-performance.md)
+## 4. SEO / Performance  (Web-Profile — siehe Skill `seo-performance`, estores-web-Plugin)
 - [ ] Meta/OG/Canonical je Seite, robots.txt + sitemap.xml
 - [ ] Core Web Vitals in Budget (LCP/INP/CLS)
 - [ ] Strukturierte Daten (JSON-LD) valide

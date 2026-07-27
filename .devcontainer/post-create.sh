@@ -11,6 +11,7 @@ install_gitleaks() (
   case "$ARCH" in
     x86_64) ARCH=x64 ;;
     aarch64|arm64) ARCH=arm64 ;;
+    # exit statt return: Funktion ist eine Subshell — beendet nur diese, nicht das Skript
     *) echo "WARNUNG: Nicht unterstützte Architektur '$ARCH' — gitleaks bitte manuell installieren." >&2; exit 0 ;;
   esac
   TMP="$(mktemp -d)"
