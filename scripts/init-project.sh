@@ -66,7 +66,7 @@ echo "Fertig. Nächste Schritte:"
 echo "   1) Falls noch nicht passiert: brew install gitleaks gh && gh auth login"
 echo "   2) npm i -D lefthook && npx lefthook install      (Git-Hooks)"
 echo "   3) claude /init"
-echo "   4) /project-type   -> Profil   ->   /stack-selection   ->   /plan"
+echo "   4) /project-type   -> Profil   ->   /stack-selection   ->   /session-start"
 
 # 6) Skript entfernt sich selbst (Einmal-Bootstrap)
 rm -f "$ROOT/scripts/init-project.sh"
