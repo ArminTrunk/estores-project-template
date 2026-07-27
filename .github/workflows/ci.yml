@@ -60,13 +60,17 @@ jobs:
           # ein Pflicht-Check darf bei kaputter Suche nicht lautlos grün werden.
           find . \( -name node_modules -o -name vendor -o -name .venv -o -name .git \) -prune -o \
                -type f \( -name '*.sh' -o -name '*.bash' \) -print0 > "$RUNNER_TEMP/shfiles"
-          # Zusätzlich endungslose Shell-Skripte per Shebang erfassen (.husky/, .githooks/, bin/, scripts/ …)
+          # Zusätzlich endungslose Shell-Skripte per Shebang erfassen (.githooks/, bin/, entrypoint …
+          # Hinweis: husky-v9-Hooks haben meist keinen Shebang mehr — die deckt das bewusst nicht ab).
+          # Auch hier über eine Datei statt Prozess-Substitution — sonst geht der find-Exit-Code verloren.
+          # Kandidaten: ohne Endung ODER Dotfile ('*.*' würde .envrc & Co. sonst ausschließen).
+          find . \( -name node_modules -o -name vendor -o -name .venv -o -name .git \) -prune -o \
+               -type f \( ! -name '*.*' -o -name '.*' \) -print0 > "$RUNNER_TEMP/shcand"
           while IFS= read -r -d '' f; do
-            if head -c 64 "$f" | head -n 1 | grep -qE '^#!.*\b(ba)?sh\b'; then
+            if head -c 64 "$f" | head -n 1 | grep -qE '^#!.*\b(ba|da|k)?sh\b'; then
               printf '%s\0' "$f" >> "$RUNNER_TEMP/shfiles"
             fi
-          done < <(find . \( -name node_modules -o -name vendor -o -name .venv -o -name .git \) -prune -o \
-                        -type f ! -name '*.*' -print0)
+          done < "$RUNNER_TEMP/shcand"
           files=()
           mapfile -d '' -t files < "$RUNNER_TEMP/shfiles"
           # -S info: SC2086 (unquotierte Variablen) bleibt blockierend, reine Stil-Hinweise nicht.
