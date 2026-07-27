@@ -7,24 +7,38 @@ on:
   schedule:
     - cron: '0 8 * * 1'  # Jeden Montag 8 Uhr
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   secrets:
     name: Secret Scan (gitleaks)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0   # gitleaks braucht die Historie
       # Nutzt automatisch die .gitleaks.toml im Repo — dieselbe Config wie lefthook lokal.
-      - uses: gitleaks/gitleaks-action@v2
+      # Drittanbieter-Action → auf Commit-SHA gepinnt (Supply-Chain-Schutz).
+      # HINWEIS: In ORG-Repos verlangt die Action einen (kostenlosen) Lizenz-Key:
+      # https://gitleaks.io → Secret GITLEAKS_LICENSE setzen. Bei persönlichen Repos nicht nötig.
+      - uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
 
   dependency-audit:
     name: Dependency Audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: npm audit
         run: |
           if [ -f package.json ]; then
@@ -35,6 +49,38 @@ jobs:
         # PHP:    composer audit
         # Python: pip-audit
 
+  dependency-review:
+    name: Dependency Review (neue Abhängigkeiten im PR)
+    # Prüft NUR die im PR neu eingeführten/geänderten Dependencies auf bekannte
+    # Schwachstellen und problematische Lizenzen — blockiert bevor sie im Repo landen.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: on-failure
+
+  workflow-lint:
+    name: Workflow Lint (actionlint)
+    # Prüft die GitHub-Workflows selbst auf Fehler (Syntax, Expressions, Shell) —
+    # genau die Fehlerklasse aus docs/SKILL-OBSERVATIONS.md Beobachtung 1.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: actionlint
+        uses: docker://rhysd/actionlint:1.7.9
+        with:
+          args: -color
+
   codeql:
     name: CodeQL Analysis
     runs-on: ubuntu-latest
@@ -42,7 +88,9 @@ jobs:
       security-events: write
       contents: read
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       # CodeQL schlägt fehl, wenn es keinen Code der Zielsprache gibt —
       # daher erst prüfen, ob JS/TS-Quellcode existiert (Stack initialisiert):
       - id: check
@@ -54,12 +102,12 @@ jobs:
             echo "code=no" >> "$GITHUB_OUTPUT"
             echo "Kein JS/TS-Code gefunden — CodeQL übersprungen (Stack noch nicht initialisiert)."
           fi
-      - uses: github/codeql-action/init@v4
+      - uses: github/codeql-action/init@c54b30b7df092240050e69945842bc67aee0f0f4 # v4.37.3
         if: steps.check.outputs.code == 'yes'
         with:
           languages: javascript-typescript
           # Für andere Sprachen anpassen: python, java-kotlin, ruby, go
-      - uses: github/codeql-action/autobuild@v4
+      - uses: github/codeql-action/autobuild@c54b30b7df092240050e69945842bc67aee0f0f4 # v4.37.3
         if: steps.check.outputs.code == 'yes'
-      - uses: github/codeql-action/analyze@v4
+      - uses: github/codeql-action/analyze@c54b30b7df092240050e69945842bc67aee0f0f4 # v4.37.3
         if: steps.check.outputs.code == 'yes'

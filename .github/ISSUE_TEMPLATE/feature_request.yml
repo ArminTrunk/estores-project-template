@@ -1,0 +1,35 @@
+name: Feature Request
+description: Neues Feature oder Verbesserung
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / Nutzen
+      description: Welches Problem löst das? Für wen?
+    validations:
+      required: true
+  - type: textarea
+    id: vorschlag
+    attributes:
+      label: Vorschlag
+      description: Wie könnte die Lösung aussehen?
+    validations:
+      required: true
+  - type: textarea
+    id: akzeptanz
+    attributes:
+      label: Akzeptanzkriterien
+      placeholder: |
+        - [ ]
+        - [ ]
+  - type: dropdown
+    id: aufwand
+    attributes:
+      label: Aufwand-Schätzung
+      options:
+        - S (~1 Tag)
+        - M (~3 Tage)
+        - L (~1 Woche)
+        - XL (>1 Woche)
+        - unklar

@@ -2,7 +2,7 @@
 
 ## Sicherheitslücke melden
 Bitte **keine** öffentlichen Issues für Sicherheitslücken.
-Melde sie vertraulich an: [security@estores.de] (anpassen).
+Melde sie vertraulich an: **info@estores.de**.
 
 Wir bestätigen den Eingang innerhalb von 48h und halten dich über den Status auf dem Laufenden.
 

@@ -1,4 +1,6 @@
 # Installation: `npm i -D lefthook && npx lefthook install`
+# Zusätzlich nötig: gitleaks als Binary — `brew install gitleaks` (macOS)
+# bzw. https://github.com/gitleaks/gitleaks#installing (kein verlässliches npm-Paket!)
 # Greift bei jedem Commit/Push — unabhängig von Claude Code Hooks.
 #
 # Stufenmodell:
@@ -10,7 +12,14 @@ pre-commit:
   parallel: true
   commands:
     secrets:
-      run: npx gitleaks protect --staged --redact --no-banner
+      # `gitleaks protect` ist seit v8.19 deprecated → `gitleaks git --pre-commit --staged`
+      run: |
+        if ! command -v gitleaks >/dev/null 2>&1; then
+          echo "FEHLER: gitleaks ist nicht installiert — Secret-Scan nicht möglich."
+          echo "Installation: brew install gitleaks  (oder https://github.com/gitleaks/gitleaks#installing)"
+          exit 1
+        fi
+        gitleaks git --pre-commit --staged --redact --no-banner
     lint-js:
       glob: "*.{js,jsx,ts,tsx}"
       run: npx eslint {staged_files} --fix --quiet 2>/dev/null || true

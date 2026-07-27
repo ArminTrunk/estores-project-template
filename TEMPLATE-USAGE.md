@@ -13,8 +13,12 @@ Welche Bausteine pro Projekt gelten, steuert das **Profil** (`/project-type`).
 
 ```
 Use this template (GitHub)  →  Repo holen  →  ./scripts/init-project.sh "Name"
-→  npm i -D lefthook && npx lefthook install  →  claude  →  /project-type  →  /stack-selection  →  /plan
+→  brew install gitleaks  →  npm i -D lefthook && npx lefthook install
+→  claude  →  /project-type  →  /stack-selection  →  /plan
 ```
+
+> Alternativ ohne lokale Installation: **GitHub Codespaces / Dev Container** öffnen —
+> `.devcontainer/` bringt Node 24, gitleaks, gh und Claude Code fertig mit.
 
 **Repo holen — zwei Wege, gleiches Ergebnis:**
 - **Terminal:** `git clone https://github.com/ArminTrunk/<dein-repo>.git` und dann `cd <dein-repo>`
@@ -32,7 +36,7 @@ Use this template (GitHub)  →  Repo holen  →  ./scripts/init-project.sh "Nam
 | 1 | Repo aus Template erzeugen | GitHub „Use this template" → „Create a new repository" | Eigenes Projekt-Repo |
 | 1b | Repo auf den Rechner holen | Terminal `git clone …` **oder** Cursor `Cmd+Shift+P` → `Git: Clone` | Projekt lokal offen |
 | 2 | **Projekt initialisieren** | `./scripts/init-project.sh "Projektname"` | README→Projekt-README, Template-Meta entfernt, `context/` + `.env.local` angelegt |
-| 3 | Git-Hooks aktivieren | `npm i -D lefthook && npx lefthook install` | Secrets-/Lint-/Commit-Hooks lokal |
+| 3 | Git-Hooks aktivieren | `brew install gitleaks` + `npm i -D lefthook && npx lefthook install` | Secrets-/Lint-/Commit-Hooks lokal (gitleaks ist ein Binary, KEIN npm-Paket) |
 | 4 | Claude Code öffnen + Ordner vertrauen | `claude` | Auto-Prompt installiert estores-Marketplace + `estores-core` (Fallback: `.claude/PLUGINS.md`) |
 | 5 | Claude Code initialisieren | `claude /init` | Claude liest CLAUDE.md + Plugins |
 | 6 | **Profil festlegen** | `/project-type` | Pflicht-Skills + Compliance-Checklisten gesetzt |
@@ -92,10 +96,16 @@ entscheidet, welche Skills und Checks überhaupt gelten.
 gitleaks (Secrets), Lint, Typecheck, Conventional-Commit-Zwang, Tests beim Push.
 
 **CI/CD (`.github/workflows/`):**
-- `ci.yml` → Typecheck, Lint, Tests, E2E, Deploy-Hooks
-- `security-scan.yml` → Dependency-Audit, gitleaks, CodeQL (+ wöchentlich)
+- `ci.yml` → PR-Titel-Check (Conventional), Typecheck, Lint, Tests, E2E, Deploy-Hooks
+- `security-scan.yml` → Dependency-Audit, Dependency-Review (neue Deps im PR),
+  gitleaks, actionlint (Workflow-Lint), CodeQL (+ wöchentlich).
+  ⚠️ Bei ORG-Repos: kostenloses Secret `GITLEAKS_LICENSE` setzen (gitleaks.io).
 - `claude-review.yml` → automatisches Claude-Review jedes PRs (Secret ANTHROPIC_API_KEY nötig)
 - `web-quality.yml` → Lighthouse-Budgets (CWV/SEO/a11y) + pa11y (nur Web-Profile)
+
+**Branch-Schutz (settings-as-code):** `.github/rulesets/branch-protection.json` —
+wird von `init-project.sh` per `gh` importiert (oder manuell: GitHub → Settings →
+Rules → Rulesets → Import). Schützt `main` + `staging`: nur via PR, CI muss grün sein.
 
 ## 4. Qualitäts-Gates — wann welcher Check (richtige Reihenfolge)
 
@@ -129,6 +139,9 @@ die wiederverwendbare Claude-Intelligenz kommt zentral aus dem Marketplace.
 - `.gitleaks.toml` — Secret-Scan-Regeln (von lefthook + CI genutzt)
 - `knip.json` — findet toten Code, ungenutzte Exports und Dependencies (`npx knip`)
 - `.size-limit.json` — Bundle-Budgets, gekoppelt an Core Web Vitals (`npx size-limit`, auch in CI)
+- `.nvmrc` — EINZIGE Quelle der Node-Version (24 = aktuelle LTS); CI liest sie via `node-version-file`
+- `.vscode/extensions.json` — empfohlene Editor-Extensions (VS Code/Cursor schlägt sie vor)
+- `.devcontainer/` — reproduzierbare Umgebung für Codespaces/Dev Containers
 - `docs/BACKLOG.md` — einzige Task-Quelle (von `/plan` gelesen, von `/create-feature` gepflegt)
 
 ## 6. Empfohlene Fremd-Plugins / MCP (nach Bedarf, kosten Kontext)

@@ -1,0 +1,48 @@
+name: Bug Report
+description: Fehler melden
+labels: [bug]
+body:
+  - type: textarea
+    id: beschreibung
+    attributes:
+      label: Beschreibung
+      description: Was funktioniert nicht?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduktion
+    attributes:
+      label: Schritte zur Reproduktion
+      placeholder: |
+        1.
+        2.
+    validations:
+      required: true
+  - type: textarea
+    id: erwartet
+    attributes:
+      label: Erwartet vs. Tatsächlich
+      placeholder: |
+        Erwartet:
+        Tatsächlich:
+    validations:
+      required: true
+  - type: dropdown
+    id: umgebung
+    attributes:
+      label: Umgebung
+      options:
+        - dev
+        - staging
+        - prod
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: Browser / OS / Version
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / Screenshots
+      description: "⚠️ Keine echten Personendaten oder Secrets einfügen!"

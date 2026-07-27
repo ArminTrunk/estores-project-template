@@ -15,6 +15,13 @@ on:
   pull_request:
     branches: [develop, staging, main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   detect:
     name: Stack erkennen
@@ -23,7 +30,9 @@ jobs:
       node: ${{ steps.check.outputs.node }}
       sizelimit: ${{ steps.check.outputs.sizelimit }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - id: check
         run: |
           echo "node=$([ -f package.json ] && echo yes || echo no)" >> "$GITHUB_OUTPUT"
@@ -35,9 +44,11 @@ jobs:
     needs: detect
     if: needs.detect.outputs.node == 'yes'
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
-        with: { node-version: '22', cache: 'npm' }
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with: { node-version-file: '.nvmrc', cache: 'npm' }
       - run: npm ci
       - run: npm run build
       - name: Lighthouse CI
@@ -52,15 +63,18 @@ jobs:
     needs: detect
     if: needs.detect.outputs.node == 'yes'
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
-        with: { node-version: '22', cache: 'npm' }
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with: { node-version-file: '.nvmrc', cache: 'npm' }
       - run: npm ci
       - run: npm run build
       - name: pa11y-ci
         run: |
           npm install -g pa11y-ci
-          npm run --if-present start & sleep 5
+          npm run --if-present start &
+          npx wait-on http://localhost:3000 --timeout 60000
           pa11y-ci
         # URLs/Schwellen in .pa11yci.json
 
@@ -70,10 +84,13 @@ jobs:
     needs: detect
     if: needs.detect.outputs.node == 'yes' && needs.detect.outputs.sizelimit == 'yes'
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
-        with: { node-version: '22', cache: 'npm' }
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with: { node-version-file: '.nvmrc', cache: 'npm' }
       - run: npm ci
       - run: npm run build
       - name: size-limit
+        # Voraussetzung im Projekt: npm i -D size-limit @size-limit/file
         run: npx size-limit

@@ -84,3 +84,54 @@ cp .mcp.json.example .mcp.json              # dann echte Tokens via Env
 - `/project-type` (im Plugin) trägt Profil-Plugins (web/compliance) selbst in enabledPlugins ein.
 - Rules sind jetzt Skills im estores-core-Plugin. Hooks kommen via plugin-eigenes hooks.json.
 - Keine Duplikate mehr zwischen Template und Marketplace.
+
+---
+
+## v3.1 — Review Juli 2026 (Stand der Technik + Bugfixes)
+
+**Kritische Fixes:**
+- `lefthook.yml`: `npx gitleaks` war KAPUTT (kein verlässliches npm-Paket; `protect`
+  seit v8.19 deprecated) → jetzt `gitleaks git --pre-commit --staged` mit Binary-Check
+  + klarer Installationsanleitung (`brew install gitleaks`).
+- `.mcp.json.example`: `@modelcontextprotocol/server-github` ist archiviert →
+  offizieller GitHub-MCP-Server (Remote, `api.githubcopilot.com/mcp/`).
+- `.env.example`: an .mcp.json angeglichen (GITHUB_PAT, SUPABASE, DATAFORSEO);
+  Brave entfernt (Server archiviert, war nirgends referenziert).
+- `.claude/settings.json`: Deny-Lücke geschlossen — `Read(./.env.*)` als Wildcard
+  (vorher fehlten z. B. `.env.development`, `.env.test`); Fallback-Modelle aktualisiert
+  (`claude-sonnet-5`, `claude-haiku-4-5`); `~/.config/gh` zusätzlich geschützt.
+- `.editorconfig`: `[*.{py}]` → `[*.py]`.
+
+**CI nach Stand der Technik gehärtet:**
+- Alle Workflows: Top-Level `permissions: contents: read` (Least Privilege) +
+  `concurrency` (überholte PR-Läufe abbrechen).
+- Drittanbieter-Actions auf Commit-SHA gepinnt (Supply-Chain; Konsens seit dem
+  tj-actions-Angriff 2025). Dependabot pflegt die Pins weiter.
+- `gitleaks-action` v2→v3; Hinweis auf kostenlosen `GITLEAKS_LICENSE` für Org-Repos.
+- NEU `dependency-review` (security-scan): blockiert PRs, die verwundbare
+  Dependencies NEU einführen (`fail-on-severity: high`).
+- NEU `workflow-lint` (actionlint): prüft die Workflows selbst — genau die
+  Fehlerklasse aus SKILL-OBSERVATIONS Beobachtung 1.
+- NEU `pr-title` (ci.yml): Conventional-Check des PR-Titels (wichtig bei Squash-Merge).
+- Node 22→24 (aktuelle LTS); Version jetzt EINMAL in `.nvmrc`, CI liest
+  `node-version-file` (kein Drift mehr zwischen Workflows).
+- Dependabot: `cooldown` (7/14 Tage) als Supply-Chain-Schutz; Actions-Updates gruppiert.
+- `claude-review.yml`: `track_progress`, Draft-PRs übersprungen, Trigger um
+  `ready_for_review`/`reopened` ergänzt.
+- web-quality: `sleep 5` → `wait-on` (kein Flaky-Start mehr).
+
+**Neu hinzugekommen:**
+- `.nvmrc` · `.vscode/extensions.json` · `.devcontainer/` (Node 24 + gitleaks +
+  gh + Claude Code vorinstalliert — auch für Codespaces)
+- `.github/rulesets/branch-protection.json` — Branch-Schutz als Code;
+  `init-project.sh` importiert ihn optional per `gh`.
+- Issue-Templates als **Issue Forms** (YAML, strukturierte Pflichtfelder) statt Markdown.
+- `init-project.sh`: sed-Escaping für Sonderzeichen im Projektnamen (& / \).
+
+**Bewusst NICHT gemacht:**
+- Renovate statt Dependabot (Dependabot + groups + cooldown reicht für Teamgröße)
+- OSSF Scorecard / harden-runner (Mehrwert primär für öffentliche OSS-Repos)
+- Merge Queue (erst ab deutlich mehr parallelen PRs sinnvoll)
+- commitlint zusätzlich zu lefthook-Regex + PR-Titel-Check (Redundanz)
+- LICENSE-Datei (Template ist öffentlich sichtbar, aber proprietär — "all rights
+  reserved" ist ohne LICENSE der Default; bei Bedarf bewusst entscheiden)
