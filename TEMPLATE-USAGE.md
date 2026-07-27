@@ -16,7 +16,7 @@ Use this template (GitHub)  →  Repo holen
 →  brew install gitleaks gh  (+ einmalig: gh auth login)
 →  ./scripts/init-project.sh "Name"
 →  npm i -D lefthook && npx lefthook install
-→  claude  →  /project-type  →  /stack-selection  →  /plan
+→  claude  →  /project-type  →  /stack-selection  →  /session-start
 ```
 
 > `gh` (GitHub CLI) wird von `/deploy-staging`, `/release` und dem Ruleset-Import
@@ -47,12 +47,12 @@ Use this template (GitHub)  →  Repo holen
 | 5 | Claude Code initialisieren | `claude /init` | Claude liest CLAUDE.md + Plugins |
 | 6 | **Profil festlegen** | `/project-type` | Pflicht-Skills + Compliance-Checklisten gesetzt |
 | 7 | Stack wählen | `/stack-selection` | `stack.md` + ARCHITECTURE-Entwurf befüllt |
-| 8 | Phase-0-Überblick | `/plan` | Projektstand + nächster Schritt |
+| 8 | Phase-0-Überblick | `/session-start` | Projektstand + nächster Schritt |
 | 9 | Discovery befüllen | (Prompt in `docs/DISCOVERY.md`) | Problem, Zielgruppe, MVP |
 | 10 | Architektur + Roadmap | (Prompts in den Docs) | ARCHITECTURE.md, ROADMAP.md |
 | 11 | Feature entwickeln | `/create-feature` | Branch, Code, Tests, Changelog, Commit |
 | 12 | Vor Commit prüfen | `/local-review` (+ §4-Gates) | grün/gelb/rot |
-| 13 | PR-Review | `/review-pr` | PASS/FAIL je Kategorie |
+| 13 | PR-Review | `/pr-review` | PASS/FAIL je Kategorie |
 | 14 | Auf Staging | `/deploy-staging` | Deploy + Smoke-Test |
 | 15 | Release | `/release` | Version, Tag, main, Changelog |
 
@@ -68,10 +68,10 @@ entscheidet, welche Skills und Checks überhaupt gelten.
 | `/hilfe` | Wegweiser: welche Situation → welches Werkzeug (für Nicht-Entwickler) | immer wenn unsicher |
 | `/project-type` | Profil + Pflicht-Skills + Compliance-Checklisten setzen | einmalig zu Beginn |
 | `/stack-selection` | geführte Stack-Wahl, befüllt ARCHITECTURE | nach Profil |
-| `/plan` | Projektstand + Empfehlung für die Session | Session-Start |
+| `/session-start` | Projektstand + Empfehlung für die Session | Session-Start |
 | `/create-feature` | Feature-Branch → Code → Tests → Commit | je Feature |
 | `/local-review` | Pre-Commit-Review uncommitteter Änderungen | vor jedem Commit |
-| `/review-pr` | vollständiges Review des PR-Diffs | vor Merge |
+| `/pr-review` | vollständiges Review des PR-Diffs | vor Merge |
 | `/security-check` | Security-Audit (security-auditor) | bei sicherheitsrelevanten Änderungen / vor Release |
 | `/privacy-check` | DSGVO-Audit (compliance-auditor) | bei Personendaten |
 | `/a11y-check` | Barrierefreiheit WCAG/BFSG | bei öffentlichen Web-Seiten |
@@ -116,7 +116,7 @@ Rules → Rulesets → Import). Schützt `main` + `staging`: nur via PR, CI muss
 ## 4. Qualitäts-Gates — wann welcher Check (richtige Reihenfolge)
 
 ```
-Coden ──▶ /local-review ──▶ [profilabhängig] ──▶ Commit ──▶ PR /review-pr ──▶ Merge
+Coden ──▶ /local-review ──▶ [profilabhängig] ──▶ Commit ──▶ PR /pr-review ──▶ Merge
                               ├─ PII?     → /privacy-check
                               ├─ Web?     → /a11y-check
                               └─ Security?→ /security-check
@@ -148,7 +148,7 @@ die wiederverwendbare Claude-Intelligenz kommt zentral aus dem Marketplace.
 - `.nvmrc` — EINZIGE Quelle der Node-Version (24 = aktuelle LTS); CI liest sie via `node-version-file`
 - `.vscode/extensions.json` — empfohlene Editor-Extensions (VS Code/Cursor schlägt sie vor)
 - `.devcontainer/` — reproduzierbare Umgebung für Codespaces/Dev Containers
-- `docs/BACKLOG.md` — einzige Task-Quelle (von `/plan` gelesen, von `/create-feature` gepflegt)
+- `docs/BACKLOG.md` — einzige Task-Quelle (von `/session-start` gelesen, von `/create-feature` gepflegt)
 
 ## 6. Empfohlene Fremd-Plugins / MCP (nach Bedarf, kosten Kontext)
 - `commit-commands@claude-plugins-official`, `pr-review-toolkit@claude-plugins-official`
