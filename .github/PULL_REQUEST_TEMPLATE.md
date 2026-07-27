@@ -11,7 +11,7 @@ Profil-relevant: <!-- marketing / cms / internal / public-pii / – -->
 - [ ] Typecheck + Lint + Tests grün
 - [ ] Tests für neue Logik (Happy/Edge/Error)
 - [ ] CHANGELOG [Unreleased] aktualisiert
-- [ ] `/review-pr` ohne 🔴
+- [ ] `/pr-review` ohne 🔴
 
 ### Falls Personendaten betroffen
 - [ ] `/privacy-check` ok · keine PII in Logs/Errors · COMPLIANCE.md aktuell
