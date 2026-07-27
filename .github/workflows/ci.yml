@@ -60,11 +60,18 @@ jobs:
           # ein Pflicht-Check darf bei kaputter Suche nicht lautlos grün werden.
           find . \( -name node_modules -o -name vendor -o -name .venv -o -name .git \) -prune -o \
                -type f \( -name '*.sh' -o -name '*.bash' \) -print0 > "$RUNNER_TEMP/shfiles"
+          # Zusätzlich endungslose Shell-Skripte per Shebang erfassen (.husky/, .githooks/, bin/, scripts/ …)
+          while IFS= read -r -d '' f; do
+            if head -c 64 "$f" | head -n 1 | grep -qE '^#!.*\b(ba)?sh\b'; then
+              printf '%s\0' "$f" >> "$RUNNER_TEMP/shfiles"
+            fi
+          done < <(find . \( -name node_modules -o -name vendor -o -name .venv -o -name .git \) -prune -o \
+                        -type f ! -name '*.*' -print0)
           files=()
           mapfile -d '' -t files < "$RUNNER_TEMP/shfiles"
-          # -S info: SC2086 (unquotierte Variablen) bleibt blockierend, reine Stil-Hinweise nicht;
-          # SC1091 (source nicht auflösbar) gezielt aus — macht in Projekten nur Lärm.
-          if [ "${#files[@]}" -eq 0 ]; then echo "Keine Shell-Skripte gefunden."; else shellcheck -S info -e SC1091 "${files[@]}"; fi
+          # -S info: SC2086 (unquotierte Variablen) bleibt blockierend, reine Stil-Hinweise nicht.
+          # -x folgt source-Zielen (entschärft SC1091 an der Wurzel); Rest-Fälle gezielt aus.
+          if [ "${#files[@]}" -eq 0 ]; then echo "Keine Shell-Skripte gefunden."; else shellcheck -x -S info -e SC1091 "${files[@]}"; fi
 
   quality:
     name: Code Quality

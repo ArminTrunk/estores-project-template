@@ -102,7 +102,7 @@ entscheidet, welche Skills und Checks überhaupt gelten.
 gitleaks (Secrets), Lint, Typecheck, Conventional-Commit-Zwang, Tests beim Push.
 
 **CI/CD (`.github/workflows/`):**
-- `ci.yml` → PR-Titel-Check (Conventional), Typecheck, Lint, Tests, E2E, Deploy-Hooks
+- `ci.yml` → PR-Titel-Check (Conventional), Shell-Lint (shellcheck), Typecheck, Lint, Tests, E2E, Deploy-Hooks
 - `security-scan.yml` → Dependency-Audit, Dependency-Review (neue Deps im PR),
   gitleaks, actionlint (Workflow-Lint), CodeQL (+ wöchentlich).
   ⚠️ Bei ORG-Repos: kostenloses Secret `GITLEAKS_LICENSE` setzen (gitleaks.io).
@@ -111,7 +111,8 @@ gitleaks (Secrets), Lint, Typecheck, Conventional-Commit-Zwang, Tests beim Push.
 
 **Branch-Schutz (settings-as-code):** `.github/rulesets/branch-protection.json` —
 wird von `init-project.sh` per `gh` importiert (oder manuell: GitHub → Settings →
-Rules → Rulesets → Import). Schützt `main` + `staging`: nur via PR, CI muss grün sein.
+Rules → Rulesets → Import). Schützt `main` + `staging`: nur via PR; Pflicht-Checks:
+„Code Quality", „Secret Scan (gitleaks)", „Shell-Skripte (shellcheck)", „PR-Titel (Conventional)".
 
 ## 4. Qualitäts-Gates — wann welcher Check (richtige Reihenfolge)
 
