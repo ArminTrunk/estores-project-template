@@ -49,11 +49,17 @@ if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1 && [[ -f .git
         && echo "Ruleset 'Schutz main + staging' aktiv." \
         || echo "WARNUNG: Ruleset konnte nicht angelegt werden (Rechte? Branches vorhanden?). Manuell: GitHub → Settings → Rules → Import."
     fi
+  else
+    echo "Hinweis: Branch-Schutz übersprungen (Repo noch nicht auf GitHub gepusht)."
+    echo "         Nachholen: GitHub → Settings → Rules → Import → .github/rulesets/branch-protection.json"
   fi
+else
+  echo "Hinweis: Branch-Schutz übersprungen (gh fehlt oder nicht eingeloggt: brew install gh && gh auth login)."
+  echo "         Nachholen: GitHub → Settings → Rules → Import → .github/rulesets/branch-protection.json"
 fi
 
 echo "Fertig. Nächste Schritte:"
-echo "   1) gitleaks installieren: brew install gitleaks   (Secret-Scan für Git-Hooks)"
+echo "   1) Falls noch nicht passiert: brew install gitleaks gh && gh auth login"
 echo "   2) npm i -D lefthook && npx lefthook install      (Git-Hooks)"
 echo "   3) claude /init"
 echo "   4) /project-type   -> Profil   ->   /stack-selection   ->   /plan"

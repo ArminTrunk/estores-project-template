@@ -12,8 +12,9 @@ Welche Bausteine pro Projekt gelten, steuert das **Profil** (`/project-type`).
 ## 0. Schnellstart (zum Merken)
 
 ```
-Use this template (GitHub)  →  Repo holen  →  ./scripts/init-project.sh "Name"
+Use this template (GitHub)  →  Repo holen
 →  brew install gitleaks gh  (+ einmalig: gh auth login)
+→  ./scripts/init-project.sh "Name"
 →  npm i -D lefthook && npx lefthook install
 →  claude  →  /project-type  →  /stack-selection  →  /plan
 ```
@@ -40,7 +41,7 @@ Use this template (GitHub)  →  Repo holen  →  ./scripts/init-project.sh "Nam
 | 1 | Repo aus Template erzeugen | GitHub „Use this template" → „Create a new repository" | Eigenes Projekt-Repo |
 | 1b | Repo auf den Rechner holen | Terminal `git clone …` **oder** Cursor `Cmd+Shift+P` → `Git: Clone` | Projekt lokal offen |
 | 2 | **Projekt initialisieren** | `./scripts/init-project.sh "Projektname"` | README→Projekt-README, Template-Meta entfernt, `context/` + `.env.local` angelegt |
-| 3 | Git-Hooks aktivieren | `brew install gitleaks` + `npm i -D lefthook && npx lefthook install` | Secrets-/Lint-/Commit-Hooks lokal (gitleaks ist ein Binary, KEIN npm-Paket) |
+| 3 | Git-Hooks aktivieren | `brew install gitleaks gh` (falls nicht in 1b passiert) + `npm i -D lefthook && npx lefthook install` | Secrets-/Lint-/Commit-Hooks lokal (gitleaks ist ein Binary, KEIN npm-Paket) |
 | 4 | Claude Code öffnen + Ordner vertrauen | `claude` | Auto-Prompt installiert estores-Marketplace + `estores-core` (Fallback: `.claude/PLUGINS.md`) |
 | 5 | Claude Code initialisieren | `claude /init` | Claude liest CLAUDE.md + Plugins |
 | 6 | **Profil festlegen** | `/project-type` | Pflicht-Skills + Compliance-Checklisten gesetzt |
